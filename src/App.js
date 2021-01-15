@@ -1,23 +1,37 @@
-import logo from './logo.svg';
 import './App.css';
+import { useEffect, useState } from 'react';
+//components 
+import Navbar from './components/Navbar';
+import Card from './components/Card';
+
+const baseUrl = 'http://localhost:8080/';
 
 function App() {
+ 
+  const [ listProduct, setListProduct ] = useState([]);
+
+   useEffect( () => {
+      getProducts();
+   },[])
+
+  const getProducts = async() => {
+    const response = await fetch(baseUrl+'api/product');
+    if(response.ok){  
+       const data = await response.json();
+       setListProduct(data);
+    }
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar/>   
+       <div className="container">
+
+       { listProduct.map((product) => (
+              <Card  key={product.id} {...product} />
+        ))}
+
+      </div>  
     </div>
   );
 }
